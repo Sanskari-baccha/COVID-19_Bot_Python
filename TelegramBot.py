@@ -13,6 +13,22 @@ List of available commands:
 /dist_of <State Name> - To get covid-19 cases  count district wide in the given state.
 /Cases_India - To get covid-19 cases cases count in India.
 """
+ADVISORY = """
+Do's\n
+----------------------------------------------------------
+Practice frequent hand washing. Wash hands with soap and water or use alcohol based hand rub. Wash hands even if they are visibly clean.\n
+Cover your nose and mouth with handkerchief or tissue while sneezing and coughing.\n
+Throw used tissues into closed bins immediately after use.\n
+See a doctor if you feel unwell(fever, difficult breathing and cough). While visiting doctor wear a mask/cloth to cover your mouth and nose.\n
+If you have these signs/symptoms please call State helpline number or Ministry of Health & Family Welfare’s 24X7 helpline at 011-23978046.\n
+Avoid participating in large gatherings.\n
+
+Don'ts\n
+-------------------------------------------------------------
+Have a close contact with anyone, if you’re experiencing cough and fever.\n
+Touch your eyes,nose and mouth.\n
+Spit in public.\n
+"""
 
 
 def start(update, context):
@@ -25,6 +41,9 @@ def about(update, context):
 
 def get_help(update, context):
     update.message.reply_text(HELP_TEXT)
+
+def advisory(update, context):
+    update.message.reply_text(ADVISORY)
 
 
 def state_wide(update, context):
@@ -48,7 +67,7 @@ def state_wide(update, context):
         except:
             update.message.reply_text("Invalid State name.Check the valid names from 'www.covid19india.org'")
     else:
-        update.message.reply_text("State name should not be empty.\nTry example /state Telangana")
+        update.message.reply_text("State name should not be empty.Try /dist Kerala")
 
 
 def Country_wide(update, context):
@@ -61,7 +80,7 @@ def Country_wide(update, context):
     user_input = 'Total'
     tabel = ""
     tabel += 'Total reported COVID-19 cases in India' + '\n'
-    tabel += '-' * 60 + '\n'
+    tabel += '-' * 40 + '\n'
     for i in range(len(state_wise.loc[[user_input]].values[0])):
         tabel += str(state_wise.loc[user_input].index[i]) + " : " + str(state_wise.loc[user_input].values[i]) + '\n'
     update.message.reply_text(tabel, parse_mode='Markdown')
@@ -79,7 +98,7 @@ def dist_wide(update, context):
         user_input = user_input.title().strip()
         try:
             table = ""
-            table = 'District wise '+user_input+' report \n'
+            table = 'District wise Kerala report' + '\n'
             table += '-' * 40 + '\n'
             for row in dist_data.loc[[user_input]].values:
                 table += str(row[0]).title() + ': ' + str(row[1]) + '\n'
@@ -87,7 +106,7 @@ def dist_wide(update, context):
         except:
             update.message.reply_text("Invalid State name.Check the valid names from 'www.covid19india.org'")
     else:
-        update.message.reply_text("State name should not be empty.\n Try example /dist_of Telangana")
+        update.message.reply_text("State name should not be empty.Try /dist_of Kerala")
 
 
 if __name__ == "__main__":
@@ -106,6 +125,7 @@ if __name__ == "__main__":
     updater.dispatcher.add_handler(CommandHandler('dist_of', dist_wide))
     updater.dispatcher.add_handler(CommandHandler('state', state_wide))
     updater.dispatcher.add_handler(CommandHandler('Cases_India', Country_wide))
+    updater.dispatcher.add_handler(CommandHandler('advisory',advisory))
     # Start the webhook
 
     updater.start_webhook(listen="0.0.0.0", port=PORT, url_path=TOKEN)
