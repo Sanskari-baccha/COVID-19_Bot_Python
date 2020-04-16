@@ -12,6 +12,7 @@ List of available commands:
 /state <State Name>- To get covid-19 cases count state wide.
 /dist_of <State Name> - To get covid-19 cases  count district wide in the given state.
 /Cases_India - To get covid-19 cases cases count in India.
+/advisory - Suggests Do's and Don'ts to prevent COVID-19 from spreading.
 """
 ADVISORY = """
 Do's\n
