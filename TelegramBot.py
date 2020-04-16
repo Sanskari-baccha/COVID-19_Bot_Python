@@ -48,7 +48,7 @@ def state_wide(update, context):
         except:
             update.message.reply_text("Invalid State name.Check the valid names from 'www.covid19india.org'")
     else:
-        update.message.reply_text("State name should not be empty.Try /dist Kerala")
+        update.message.reply_text("State name should not be empty.\nTry example /state Telangana")
 
 
 def Country_wide(update, context):
@@ -87,7 +87,7 @@ def dist_wide(update, context):
         except:
             update.message.reply_text("Invalid State name.Check the valid names from 'www.covid19india.org'")
     else:
-        update.message.reply_text("State name should not be empty.Try /dist_of Kerala")
+        update.message.reply_text("State name should not be empty.\n Try example /dist_of Telangana")
 
 
 if __name__ == "__main__":
