@@ -61,7 +61,7 @@ def Country_wide(update, context):
     user_input = 'Total'
     tabel = ""
     tabel += 'Total reported COVID-19 cases in India' + '\n'
-    tabel += '-' * 40 + '\n'
+    tabel += '-' * 60 + '\n'
     for i in range(len(state_wise.loc[[user_input]].values[0])):
         tabel += str(state_wise.loc[user_input].index[i]) + " : " + str(state_wise.loc[user_input].values[i]) + '\n'
     update.message.reply_text(tabel, parse_mode='Markdown')
@@ -79,7 +79,7 @@ def dist_wide(update, context):
         user_input = user_input.title().strip()
         try:
             table = ""
-            table = 'District wise Kerala report' + '\n'
+            table = 'District wise '+user_input+' report \n'
             table += '-' * 40 + '\n'
             for row in dist_data.loc[[user_input]].values:
                 table += str(row[0]).title() + ': ' + str(row[1]) + '\n'
@@ -89,13 +89,14 @@ def dist_wide(update, context):
     else:
         update.message.reply_text("State name should not be empty.Try /dist_of Kerala")
 
+
 if __name__ == "__main__":
-    #TOKEN = '' #Provide token name if running locally
-    TOKEN = os.environ.get('API_TOKEN') #Here the API token will provide ENV variable in Heroku
+    # TOKEN = '' #Provide token name if running locally
+    TOKEN = os.environ.get('API_TOKEN')  # Here the API token will provide ENV variable in Heroku
 
     NAME = 'india-covid19-bot'
 
-    #PORT = 5000 #Provide port number if running locally
+    # PORT = 5000 #Provide port number if running locally
     # Port is given by Heroku
     PORT = int(os.environ.get('PORT', '8443'))
     updater = Updater(TOKEN, use_context=True)
@@ -109,7 +110,7 @@ if __name__ == "__main__":
 
     updater.start_webhook(listen="0.0.0.0", port=PORT, url_path=TOKEN)
     updater.bot.setWebhook("https://{}.herokuapp.com/{}".format(NAME, TOKEN))
-    #updater.bot.setWebhook("https://<>.ngrok.io/{}".format(TOKEN)) #provide url if running locally
+    # updater.bot.setWebhook("https://<>.ngrok.io/{}".format(TOKEN)) #provide url if running locally
 
     # updater.start_polling()
     updater.idle()
