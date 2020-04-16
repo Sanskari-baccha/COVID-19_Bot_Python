@@ -1,0 +1,121 @@
+import os
+from telegram.ext import Updater, CommandHandler
+import requests
+from pandas import json_normalize
+
+START_TEXT = 'Hello there. Type /help to get list of supported commands'
+ABOUT_TEXT = 'COVID-19 Bot made by Leela Manikanta.\n Linkdin profile https://www.linkedin.com/in/leela-manikanta-siraparapu/'
+HELP_TEXT = """
+List of available commands:
+/help - Get list of available commands.
+/about - About the bot.
+/state <State Name>- To get covid-19 cases count state wide.
+/dist_of <State Name> - To get covid-19 cases  count district wide in the given state.
+/Cases_India - To get covid-19 cases cases count in India.
+"""
+
+
+def start(update, context):
+    update.message.reply_text(START_TEXT)
+
+
+def about(update, context):
+    update.message.reply_text(ABOUT_TEXT)
+
+
+def get_help(update, context):
+    update.message.reply_text(HELP_TEXT)
+
+
+def state_wide(update, context):
+    user_input = " ".join(context.args)
+    if user_input != "":
+        state = 'https://api.covid19india.org/data.json'
+        state = requests.get(state)
+        state = state.json()
+        state_wise = json_normalize(data=state, record_path='statewise')
+        state_wise = state_wise[['active', 'confirmed', 'deaths', 'recovered', 'lastupdatedtime', 'state']]
+        state_wise = state_wise.set_index('state')
+        user_input = user_input.title().strip()
+        try:
+            tabel = ""
+            tabel += user_input + ' COVID-19 report' + '\n'
+            tabel += '-' * 60 + '\n'
+            for i in range(len(state_wise.loc[[user_input]].values[0])):
+                tabel += str(state_wise.loc[user_input].index[i]).title() + " : " + str(
+                    state_wise.loc[user_input].values[i]) + '\n'
+            update.message.reply_text(tabel, parse_mode='Markdown')
+        except:
+            update.message.reply_text("Invalid State name.Check the valid names from 'www.covid19india.org'")
+    else:
+        update.message.reply_text("State name should not be empty.Try /dist Kerala")
+
+
+def Country_wide(update, context):
+    state = 'https://api.covid19india.org/data.json'
+    state = requests.get(state)
+    state = state.json()
+    state_wise = json_normalize(data=state, record_path='statewise')
+    state_wise = state_wise[['active', 'confirmed', 'deaths', 'recovered', 'lastupdatedtime', 'state']]
+    state_wise = state_wise.set_index('state')
+    user_input = 'Total'
+    tabel = ""
+    tabel += 'Total reported COVID-19 cases in India' + '\n'
+    tabel += '-' * 40 + '\n'
+    for i in range(len(state_wise.loc[[user_input]].values[0])):
+        tabel += str(state_wise.loc[user_input].index[i]) + " : " + str(state_wise.loc[user_input].values[i]) + '\n'
+    update.message.reply_text(tabel, parse_mode='Markdown')
+
+
+def dist_wide(update, context):
+    user_input = " ".join(context.args)
+    if user_input != "":
+        dist = 'https://api.covid19india.org/v2/state_district_wise.json'
+        dist = requests.get(dist)
+        dist = dist.json()
+        dist_data = json_normalize(dist, record_path='districtData', meta=['state'])
+        dist_data = dist_data[['district', 'confirmed', 'state']]
+        dist_data = dist_data.set_index('state')
+        user_input = user_input.title().strip()
+        try:
+            table = ""
+            table = 'District wise Kerala report' + '\n'
+            table += '-' * 40 + '\n'
+            for row in dist_data.loc[[user_input]].values:
+                table += str(row[0]).title() + ': ' + str(row[1]) + '\n'
+            update.message.reply_text(table, parse_mode='Markdown')
+        except:
+            update.message.reply_text("Invalid State name.Check the valid names from 'www.covid19india.org'")
+    else:
+        update.message.reply_text("State name should not be empty.Try /dist_of Kerala")
+
+
+def user_input(update, context):
+    user_input = " ".join(context.args)
+    update.message.reply_text(user_input)
+
+
+if __name__ == "__main__":
+    #TOKEN = '' #Provide token name if running locally
+    TOKEN = os.environ.get('API_TOKEN') #Here the API token will provide ENV variable in Heroku
+
+    NAME = "COVID-19-India"
+    #PORT = 5000 #Provide port number if running locally
+    # Port is given by Heroku
+    PORT = os.environ.get('PORT')
+    updater = Updater(TOKEN, use_context=True)
+    updater.dispatcher.add_handler(CommandHandler('start', start))
+    updater.dispatcher.add_handler(CommandHandler('about', about))
+    updater.dispatcher.add_handler(CommandHandler('help', get_help))
+    updater.dispatcher.add_handler(CommandHandler('dist_of', dist_wide))
+    updater.dispatcher.add_handler(CommandHandler('state', state_wide))
+    updater.dispatcher.add_handler(CommandHandler('Cases_India', Country_wide))
+    updater.dispatcher.add_handler(CommandHandler('user_input', user_input))
+    # Start the webhook
+
+    updater.start_webhook(listen="0.0.0.0", port=int(PORT), url_path=TOKEN)
+    updater.bot.setWebhook("https://{}.herokuapp.com/{}".format(NAME, TOKEN))
+    #updater.bot.setWebhook("https://<>.ngrok.io/{}".format(TOKEN)) #provide url if running locally
+
+    # updater.start_polling()
+    updater.idle()
