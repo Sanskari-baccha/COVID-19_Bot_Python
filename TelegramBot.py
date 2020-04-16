@@ -89,12 +89,6 @@ def dist_wide(update, context):
     else:
         update.message.reply_text("State name should not be empty.Try /dist_of Kerala")
 
-
-def user_input(update, context):
-    user_input = " ".join(context.args)
-    update.message.reply_text(user_input)
-
-
 if __name__ == "__main__":
     #TOKEN = '' #Provide token name if running locally
     TOKEN = os.environ.get('API_TOKEN') #Here the API token will provide ENV variable in Heroku
@@ -110,7 +104,6 @@ if __name__ == "__main__":
     updater.dispatcher.add_handler(CommandHandler('dist_of', dist_wide))
     updater.dispatcher.add_handler(CommandHandler('state', state_wide))
     updater.dispatcher.add_handler(CommandHandler('Cases_India', Country_wide))
-    updater.dispatcher.add_handler(CommandHandler('user_input', user_input))
     # Start the webhook
 
     updater.start_webhook(listen="0.0.0.0", port=int(PORT), url_path=TOKEN)
