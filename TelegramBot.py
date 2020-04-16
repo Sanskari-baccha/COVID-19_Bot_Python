@@ -97,7 +97,7 @@ if __name__ == "__main__":
 
     #PORT = 5000 #Provide port number if running locally
     # Port is given by Heroku
-    PORT = os.environ.get('PORT')
+    PORT = int(os.environ.get('PORT', '8443'))
     updater = Updater(TOKEN, use_context=True)
     updater.dispatcher.add_handler(CommandHandler('start', start))
     updater.dispatcher.add_handler(CommandHandler('about', about))
@@ -107,7 +107,7 @@ if __name__ == "__main__":
     updater.dispatcher.add_handler(CommandHandler('Cases_India', Country_wide))
     # Start the webhook
 
-    updater.start_webhook(listen="0.0.0.0", port=int(PORT), url_path=TOKEN)
+    updater.start_webhook(listen="0.0.0.0", port=PORT, url_path=TOKEN)
     updater.bot.setWebhook("https://{}.herokuapp.com/{}".format(NAME, TOKEN))
     #updater.bot.setWebhook("https://<>.ngrok.io/{}".format(TOKEN)) #provide url if running locally
 
