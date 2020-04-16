@@ -93,7 +93,8 @@ if __name__ == "__main__":
     #TOKEN = '' #Provide token name if running locally
     TOKEN = os.environ.get('API_TOKEN') #Here the API token will provide ENV variable in Heroku
 
-    NAME = "COVID-19-India"
+    NAME = 'india-covid19-bot'
+
     #PORT = 5000 #Provide port number if running locally
     # Port is given by Heroku
     PORT = os.environ.get('PORT')
