@@ -83,7 +83,7 @@ def Country_wide(update, context):
     tabel += 'Total reported COVID-19 cases in India' + '\n'
     tabel += '-' * 40 + '\n'
     for i in range(len(state_wise.loc[[user_input]].values[0])):
-        tabel += str(state_wise.loc[user_input].index[i]) + " : " + str(state_wise.loc[user_input].values[i]) + '\n'
+        tabel += str(state_wise.loc[user_input].index[i]).title() + " : " + str(state_wise.loc[user_input].values[i]) + '\n'
     update.message.reply_text(tabel, parse_mode='Markdown')
 
 
