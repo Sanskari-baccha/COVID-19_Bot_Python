@@ -68,7 +68,7 @@ def state_wide(update, context):
         except:
             update.message.reply_text("Invalid State name.Check the valid names from 'www.covid19india.org'")
     else:
-        update.message.reply_text("State name should not be empty.Try /dist Kerala")
+        update.message.reply_text("State name should not be empty.Try /state Kerala")
 
 
 def Country_wide(update, context):
@@ -99,7 +99,7 @@ def dist_wide(update, context):
         user_input = user_input.title().strip()
         try:
             table = ""
-            table = 'District wise Kerala report' + '\n'
+            table = 'District wise '+user_input+' report\n'
             table += '-' * 40 + '\n'
             for row in dist_data.loc[[user_input]].values:
                 table += str(row[0]).title() + ': ' + str(row[1]) + '\n'
